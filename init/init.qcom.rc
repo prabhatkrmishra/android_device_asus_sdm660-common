@@ -465,6 +465,16 @@ service vendor.audio-hal /vendor/bin/hw/android.hardware.audio.service
     task_profiles ProcessCapacityHigh HighPerformance
     onrestart restart audioserver
 
+# cdsprpcd is only needed on sdm660; keep it from auto-starting
+# everywhere else (post_boot.sh starts it where needed, and the
+# disable prop stops it on sdm636).
+service vendor.cdsprpcd /vendor/bin/cdsprpcd
+    override
+    disabled
+    class main
+    user system
+    group system
+
 service vendor.sensors-hal-1-0 /vendor/bin/hw/android.hardware.sensors@1.0-service
     override
     class hal
