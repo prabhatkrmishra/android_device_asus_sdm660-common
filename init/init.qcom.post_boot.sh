@@ -2785,9 +2785,20 @@ case "$target" in
             echo 140 > /proc/sys/kernel/sched_group_upmigrate
             echo 120 > /proc/sys/kernel/sched_group_downmigrate
 
-            # cpuset settings
-            echo 0-3 > /dev/cpuset/background/cpus
-            echo 0-3 > /dev/cpuset/system-background/cpus
+            # cpuset settings (server profile: bg work off the big
+            # cores, UI/foreground everywhere)
+            echo 4-5 > /dev/cpuset/background/cpus
+            echo 2-5 > /dev/cpuset/system-background/cpus
+            echo 2-5 > /dev/cpuset/restricted/cpus
+
+            # stune runtime (server profile: top-app responsive,
+            # everything else unboosted)
+            echo 1 > /dev/stune/foreground/schedtune.prefer_idle
+            echo 0 > /dev/stune/foreground/schedtune.boost
+            echo 0 > /dev/stune/schedtune.prefer_idle
+            echo 0 > /dev/stune/schedtune.boost
+            echo 1 > /dev/stune/top-app/schedtune.prefer_idle
+            echo 10 > /dev/stune/top-app/schedtune.boost
 
             #if the kernel version >=4.14,use the schedutil governor
             if [ $KernelVersionA -ge 4 ] && [ $KernelVersionB -ge 14 ]; then
