@@ -202,3 +202,10 @@ vendor.video.disable.ubwc=1
 
 # Zygote
 zygote.critical_window.minute=10
+
+# PowerHAL interaction timing
+vendor.powerhal.interaction.min=1000
+vendor.powerhal.interaction.max=5650
+vendor.powerhal.interaction.offset=650
+vendor.powerhal.disp.idle_support=true
+vendor.powerhal.disp.idle_wait=100
