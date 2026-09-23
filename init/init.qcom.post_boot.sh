@@ -541,7 +541,7 @@ function sdm660_sched_schedutil_dcvs() {
             echo "bw_hwmon" > $cpubw/governor
             echo 50 > $cpubw/polling_interval
             echo 762 > $cpubw/min_freq
-            echo "762 1571 2086 2929 3879 5163 5931 6881" > $cpubw/bw_hwmon/mbps_zones
+            echo "1525 3143 5859 7759 9887 10327 11863 13763" > $cpubw/bw_hwmon/mbps_zones
             echo 4 > $cpubw/bw_hwmon/sample_ms
             echo 85 > $cpubw/bw_hwmon/io_percent
             echo 100 > $cpubw/bw_hwmon/decay_rate
@@ -640,7 +640,8 @@ function configure_read_ahead_kb_values() {
     MemTotal=${MemTotalStr:16:8}
 
     # Set 128 for <= 3GB &
-    # set 512 for >= 4GB targets.
+    # set 256 for 4-6GB (eMMC, zram-heavy) &
+    # set 512 for >= 7GB targets.
     if [ $MemTotal -le 3145728 ]; then
         echo 128 > /sys/block/mmcblk0/bdi/read_ahead_kb
         echo 128 > /sys/block/mmcblk0/queue/read_ahead_kb
@@ -649,6 +650,14 @@ function configure_read_ahead_kb_values() {
         echo 128 > /sys/block/dm-0/queue/read_ahead_kb
         echo 128 > /sys/block/dm-1/queue/read_ahead_kb
         echo 128 > /sys/block/dm-2/queue/read_ahead_kb
+    elif [ $MemTotal -le 6291456 ]; then
+        echo 256 > /sys/block/mmcblk0/bdi/read_ahead_kb
+        echo 256 > /sys/block/mmcblk0/queue/read_ahead_kb
+        echo 128 > /sys/block/mmcblk0rpmb/bdi/read_ahead_kb
+        echo 128 > /sys/block/mmcblk0rpmb/queue/read_ahead_kb
+        echo 512 > /sys/block/dm-0/queue/read_ahead_kb
+        echo 512 > /sys/block/dm-1/queue/read_ahead_kb
+        echo 512 > /sys/block/dm-2/queue/read_ahead_kb
     else
         echo 512 > /sys/block/mmcblk0/bdi/read_ahead_kb
         echo 512 > /sys/block/mmcblk0/queue/read_ahead_kb
